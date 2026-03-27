@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GavelPro Auctions</title>
+
+    <!-- Google Fonts: Cormorant Garamond + DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet" href="~/css/auction.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="ap-nav" id="mainNav">
+        <div class="ap-nav__inner">
+            <a class="ap-nav__brand" asp-page="/Index">
+                <span class="ap-nav__gavel"><i class="bi bi-hammer"></i></span>
+                <span class="ap-nav__name">GavelPro</span>
+            </a>
+
+            <ul class="ap-nav__links">
+                <li><a asp-page="/Index">Home</a></li>
+                <li><a href="#auctions">Live Auctions</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+            </ul>
+
+            <div class="ap-nav__actions">
+                <a class="ap-btn ap-btn--ghost" asp-page="/Account/Login">Sign In</a>
+                <a class="ap-btn ap-btn--gold" asp-page="/Account/Register">Register</a>
+            </div>
+
+            <button class="ap-nav__hamburger" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="ap-nav__mobile" id="mobileMenu">
+            <a asp-page="/Index">Home</a>
+            <a href="#auctions">Live Auctions</a>
+            <a href="#how-it-works">How It Works</a>
+            <hr />
+            <a asp-page="/Account/Login">Sign In</a>
+            <a class="ap-btn ap-btn--gold" asp-page="/Account/Register">Register</a>
+        </div>
+    </nav>
+
+    <!-- PAGE CONTENT -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="ap-footer">
+        <div class="ap-footer__inner">
+            <div class="ap-footer__brand">
+                <span class="ap-nav__gavel"><i class="bi bi-hammer"></i></span>
+                <span class="ap-nav__name">GavelPro</span>
+                <p>The premier destination for online auctions. Connecting serious buyers with extraordinary items.</p>
+            </div>
+
+            <div class="ap-footer__cols">
+                <div class="ap-footer__col">
+                    <h4>Platform</h4>
+                    <a href="#auctions">Browse Auctions</a>
+                    <a href="#">How Bidding Works</a>
+                    <a href="#">Bid Security</a>
+                    <a href="#">Winners Gallery</a>
+                </div>
+                <div class="ap-footer__col">
+                    <h4>Auctioneers</h4>
+                    <a asp-page="/Account/Login">Auctioneer Login</a>
+                    <a asp-page="/Auctions/Index">Post an Item</a>
+                    <a href="#">Manage Listings</a>
+                </div>
+                <div class="ap-footer__col">
+                    <h4>Support</h4>
+                    <a href="#">Help Centre</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms of Service</a>
+                    <a asp-page="/Privacy">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+        <div class="ap-footer__bottom">
+            <span>&copy; @DateTime.Now.Year GavelPro Auctions. All rights reserved.</span>
+            <div class="ap-footer__social">
+                <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/js/auction.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

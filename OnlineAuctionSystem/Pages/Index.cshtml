@@ -3,428 +3,355 @@
 @{
     ViewData["Title"] = "Home";
     var spotlightItem = Model.FeaturedAuctions.FirstOrDefault();
+    var upcomingCount = Model.LiveAuctions.Count(a => !a.IsLive);
 }
 
-<!-- ═══════════════════════════════════════════
-     HERO SECTION
-═══════════════════════════════════════════ -->
-<section class="hero">
-    <div class="hero__backdrop"></div>
-    <div class="hero__grain"></div>
-
-    <div class="hero__content">
-        <div class="hero__eyebrow">
-            <span class="hero__live-dot"></span>
-            @Model.FeaturedAuctions.Count(a => a.IsLive) Live Auctions Happening Now
-        </div>
-
-        <h1 class="hero__headline">
-            Where Rare Finds<br />
-            <em>Find New Owners</em>
-        </h1>
-
-        <p class="hero__sub">
-            Bid on authenticated, extraordinary items from vetted auctioneers.
-            Register in minutes. Bid with confidence.
-        </p>
-
-        <div class="hero__cta-row">
-            <a class="ap-btn ap-btn--gold ap-btn--lg" href="#auctions">
-                <i class="bi bi-hammer"></i> Explore Live Auctions
-            </a>
-            <a class="ap-btn ap-btn--outline ap-btn--lg" asp-page="/Account/Register">
-                Create Free Account
-            </a>
-        </div>
-
-        <!-- Live ticker -->
-        <div class="hero__ticker">
-            <span class="ticker__label">Latest Bid</span>
-            <div class="ticker__items" id="tickerItems">
-                <div class="ticker__item">
-                    <strong>Patek Philippe Nautilus</strong> — New bid of
-                    <span class="ticker__amount">$132,000</span> placed 2 min ago
+<!-- Hero -->
+<section class="py-5 border-bottom border-secondary">
+    <div class="container py-lg-4">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="d-inline-flex align-items-center gap-2 small text-warning border border-warning rounded-pill px-3 py-2 mb-4">
+                    <span class="rounded-circle bg-warning" style="width:8px;height:8px;"></span>
+                    @upcomingCount Upcoming @(upcomingCount == 1 ? "Auction" : "Auctions")
                 </div>
-                <div class="ticker__item">
-                    <strong>1967 Shelby GT500</strong> — New bid of
-                    <span class="ticker__amount">$285,000</span> placed 4 min ago
+
+                <h1 class="display-3 font-display fw-light mb-4">
+                    Where Rare Finds<br />
+                    <em class="text-warning">Find New Owners</em>
+                </h1>
+
+                <p class="lead text-secondary mb-4">
+                    Bid on authenticated, extraordinary items from vetted auctioneers.
+                    Register in minutes. Bid with confidence.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <a class="btn btn-warning btn-lg text-dark" href="#auctions">
+                        <i class="bi bi-hammer"></i> Explore Live Auctions
+                    </a>
+                    <a class="btn btn-outline-light btn-lg" asp-page="/Account/Register">
+                        Create Free Account
+                    </a>
                 </div>
-                <div class="ticker__item">
-                    <strong>Picasso Lithograph</strong> — New bid of
-                    <span class="ticker__amount">$47,500</span> placed 7 min ago
-                </div>
+
             </div>
-        </div>
-    </div>
 
-    <!-- Featured auction spotlight -->
-    @if (spotlightItem is not null)
-    {
-        <div class="hero__spotlight">
-            <div class="spotlight__badge">Featured Lot</div>
-            <div class="spotlight__img-wrap">
-                <img src="@spotlightItem.ImageUrl"
-                     alt="@spotlightItem.Title"
-                     class="spotlight__img" />
-                <div class="spotlight__overlay">
-                    <span class="spotlight__live"><span class="hero__live-dot"></span> LIVE</span>
-                </div>
-            </div>
-            <div class="spotlight__info">
-                <p class="spotlight__cat">@spotlightItem.Category</p>
-                <h3 class="spotlight__title">@spotlightItem.Title</h3>
-                <div class="spotlight__bid-row">
-                    <div>
-                        <p class="spotlight__bid-label">Current Bid</p>
-                        <p class="spotlight__bid-value">$@spotlightItem.CurrentBid.ToString("N0")</p>
+            <div class="col-lg-6">
+                @if (spotlightItem is not null)
+                {
+                    <div class="card border-secondary shadow-lg overflow-hidden position-relative featured-card">
+                        <div class="position-absolute top-0 start-0 m-3 z-1">
+                            <span class="badge text-bg-warning text-dark">Featured Lot</span>
+                        </div>
+                        <div class="ratio ratio-16x9 bg-secondary">
+                            <img src="@spotlightItem.ImageUrl" alt="@spotlightItem.Title" class="w-100 h-100 object-fit-cover" />
+                        </div>
+                        <div class="card-body">
+                            <p class="small text-uppercase text-warning fw-semibold mb-1">@spotlightItem.Category</p>
+                            <h3 class="font-display h4 mb-3">@spotlightItem.Title</h3>
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <div class="small text-secondary">Current Bid</div>
+                                    <div class="fs-3 font-display fw-bold text-warning">$@spotlightItem.CurrentBid.ToString("N0")</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="small text-secondary">Ends In</div>
+                                    <div class="fs-5 fw-semibold font-monospace spotlight__timer" data-ends="@spotlightItem.EndsAt.ToString("o")">--:--:--</div>
+                                </div>
+                            </div>
+                            <a class="btn btn-warning w-100 text-dark" asp-page="/Account/Login" data-auction-id="@spotlightItem.Id">Sign In to Bid</a>
+                        </div>
                     </div>
-                    <div>
-                        <p class="spotlight__bid-label">Ends In</p>
-                        <p class="spotlight__timer"
-                           data-ends="@spotlightItem.EndsAt.ToString("o")">--:--:--</p>
+                }
+                else
+                {
+                    <div class="card border-secondary featured-card">
+                        <div class="card-body p-4 text-center">
+                            <p class="small text-uppercase text-warning fw-semibold mb-2">Featured Lot</p>
+                            <h3 class="font-display h4 mb-3">New premium auctions are coming soon.</h3>
+                            <p class="text-secondary mb-4">Create your account now to receive launch alerts for top listings.</p>
+                            <a class="btn btn-warning text-dark" asp-page="/Account/Register">Create Free Account</a>
+                        </div>
                     </div>
-                </div>
-                <a class="ap-btn ap-btn--gold ap-btn--block" asp-page="/Account/Login"
-                   data-auction-id="@spotlightItem.Id">
-                    Sign In to Bid
-                </a>
+                }
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="hero__spotlight hero__spotlight--empty">
-            <div class="spotlight__info">
-                <p class="spotlight__cat">Featured Lot</p>
-                <h3 class="spotlight__title">New premium auctions are coming soon.</h3>
-                <p class="section__desc">Create your account now to receive launch alerts for top listings.</p>
-                <a class="ap-btn ap-btn--gold ap-btn--block" asp-page="/Account/Register">
-                    Create Free Account
-                </a>
-            </div>
-        </div>
-    }
-</section>
-
-<!-- ═══════════════════════════════════════════
-     STATS STRIP
-═══════════════════════════════════════════ -->
-<section class="stats-strip">
-    <div class="stats-strip__inner">
-        <div class="stat-card">
-            <span class="stat-card__num" data-count="@Model.Stats.TotalAuctions">0</span>
-            <span class="stat-card__label">Total Auctions</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-card">
-            <span class="stat-card__num" data-count="@Model.Stats.RegisteredBidders">0</span>
-            <span class="stat-card__label">Registered Bidders</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-card">
-            <span class="stat-card__num" data-prefix="$" data-suffix="M"
-                  data-count="@((int)(Model.Stats.TotalSold / 1_000_000))">0</span>
-            <span class="stat-card__label">Total Value Sold</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-card">
-            <span class="stat-card__num" data-suffix="%" data-count="@Model.Stats.SuccessRate">0</span>
-            <span class="stat-card__label">Success Rate</span>
         </div>
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     FEATURED LOTS (3 HERO CARDS)
-═══════════════════════════════════════════ -->
-<section class="section featured-lots" id="auctions">
-    <div class="section__header">
-        <div class="section__eyebrow">Spotlight Lots</div>
-        <h2 class="section__title">Featured Auctions</h2>
-        <p class="section__desc">Hand-picked items from our most trusted auctioneers</p>
+<!-- Stats -->
+<section class="py-4 border-bottom border-secondary bg-body-secondary">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="display-5 font-display fw-bold text-warning js-stat-num" data-count="@Model.Stats.TotalAuctions">0</div>
+                <div class="small text-secondary">Total Auctions</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-5 font-display fw-bold text-warning js-stat-num" data-count="@Model.Stats.RegisteredBidders">0</div>
+                <div class="small text-secondary">Registered Bidders</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-5 font-display fw-bold text-warning js-stat-num" data-prefix="$" data-suffix="M" data-count="@((int)(Model.Stats.TotalSold / 1_000_000))">0</div>
+                <div class="small text-secondary">Total Value Sold</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="display-5 font-display fw-bold text-warning js-stat-num" data-suffix="%" data-count="@Model.Stats.SuccessRate">0</div>
+                <div class="small text-secondary">Success Rate</div>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="featured-grid">
-        @if (Model.FeaturedAuctions.Any())
-        {
-            @foreach (var item in Model.FeaturedAuctions)
+<!-- Featured -->
+<section class="py-5" id="auctions">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="small text-uppercase text-warning fw-semibold mb-2">Spotlight Lots</div>
+            <h2 class="font-display display-5 fw-light mb-3">Featured Auctions</h2>
+            <p class="text-secondary mx-auto" style="max-width: 32rem;">Hand-picked items from our most trusted auctioneers</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @if (Model.FeaturedAuctions.Any())
             {
-                var progress = item.StartingBid > 0
-                    ? Math.Min(100, (int)(((item.CurrentBid - item.StartingBid) / item.StartingBid) * 100))
-                    : 0;
-            <article class="featured-card">
-                <div class="featured-card__img-wrap">
-                    <img src="@item.ImageUrl" alt="@item.Title" class="featured-card__img" loading="lazy" />
-                    <div class="featured-card__badges">
-                        @if (item.IsLive)
-                        {
-                            <span class="badge badge--live"><span class="hero__live-dot"></span> Live</span>
-                        }
-                        <span class="badge badge--cat">@item.Category</span>
+                @foreach (var item in Model.FeaturedAuctions)
+                {
+                    var progress = item.StartingBid > 0
+                        ? Math.Min(100, (int)(((item.CurrentBid - item.StartingBid) / item.StartingBid) * 100))
+                        : 0;
+                    <div class="col">
+                        <article class="card h-100 border-secondary featured-card shadow-sm">
+                            <div class="position-relative">
+                                <img src="@item.ImageUrl" alt="@item.Title" class="card-img-top w-100 object-fit-cover" style="height: 220px;" loading="lazy" />
+                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-wrap gap-1">
+                                    @if (item.IsLive)
+                                    {
+                                        <span class="badge bg-danger"><span class="rounded-circle bg-white d-inline-block me-1" style="width:6px;height:6px;"></span> Live</span>
+                                    }
+                                    <span class="badge text-bg-dark border border-secondary">@item.Category</span>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <p class="small text-secondary mb-2"><i class="bi bi-building"></i> @item.AuctioneerName</p>
+                                <h3 class="font-display h5 mb-3">@item.Title</h3>
+                                <div class="row g-2 small mb-3 p-2 rounded bg-body-secondary">
+                                    <div class="col-4">
+                                        <div class="text-secondary">Current Bid</div>
+                                        <div class="fw-semibold">$@item.CurrentBid.ToString("N0")</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-secondary">Bids</div>
+                                        <div class="fw-semibold">@item.BidCount</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-secondary">Ends In</div>
+                                        <div class="fw-semibold text-warning timer" data-ends="@item.EndsAt.ToString("o")">--:--:--</div>
+                                    </div>
+                                </div>
+                                <div class="progress mb-1" style="height: 4px;" role="progressbar" aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar bg-warning" style="width: @progress%"></div>
+                                </div>
+                                <p class="small text-secondary mb-3">@progress% above starting bid</p>
+                                <a class="btn btn-warning text-dark mt-auto" asp-page="/Account/Login" data-auction-id="@item.Id">Sign In to Bid</a>
+                            </div>
+                        </article>
                     </div>
-                </div>
-                <div class="featured-card__body">
-                    <p class="featured-card__auctioneer">
-                        <i class="bi bi-building"></i> @item.AuctioneerName
-                    </p>
-                    <h3 class="featured-card__title">@item.Title</h3>
-
-                    <div class="featured-card__meta">
-                        <div class="meta-item">
-                            <span class="meta-item__label">Current Bid</span>
-                            <span class="meta-item__val">$@item.CurrentBid.ToString("N0")</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-item__label">Bids</span>
-                            <span class="meta-item__val">@item.BidCount</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-item__label">Ends In</span>
-                            <span class="meta-item__val timer" data-ends="@item.EndsAt.ToString("o")">--:--:--</span>
-                        </div>
-                    </div>
-
-                    <div class="featured-card__progress">
-                        <div class="progress-bar" style="width: @progress%">
-                        </div>
-                    </div>
-                    <p class="featured-card__progress-label">
-                        @progress% above starting bid
-                    </p>
-
-                    <a class="ap-btn ap-btn--gold ap-btn--block" asp-page="/Account/Login"
-                           data-auction-id="@item.Id">
-                        Sign In to Bid
-                    </a>
-                </div>
-            </article>
+                }
             }
-        }
-        else
-        {
-            <article class="featured-card featured-card--empty">
-                <div class="featured-card__body">
-                    <h3 class="featured-card__title">No featured lots yet</h3>
-                    <p class="section__desc">Featured listings will appear here as soon as auctioneers publish premium items.</p>
-                </div>
-            </article>
-        }
-    </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     ALL LIVE AUCTIONS GRID
-═══════════════════════════════════════════ -->
-<section class="section auction-grid-section">
-    <div class="section__header">
-        <div class="section__eyebrow">All Listings</div>
-        <h2 class="section__title">Browse Auctions</h2>
-        <p class="section__desc">Discover thousands of lots across every category</p>
-    </div>
-
-    <!-- Filter tabs -->
-    <div class="filter-tabs" id="filterTabs">
-        <button class="filter-tab active" data-filter="all">All</button>
-        <button class="filter-tab" data-filter="live">Live Now</button>
-        <button class="filter-tab" data-filter="upcoming">Upcoming</button>
-    </div>
-
-    <div class="auction-grid" id="auctionGrid">
-        @if (Model.LiveAuctions.Any())
-        {
-            @foreach (var item in Model.LiveAuctions)
+            else
             {
-            <article class="auction-card @(item.IsLive ? "auction-card--live" : "")"
-                     data-status="@(item.IsLive ? "live" : "upcoming")">
-                <div class="auction-card__img-wrap">
-                    <img src="@item.ImageUrl" alt="@item.Title"
-                         class="auction-card__img" loading="lazy" />
-                    @if (item.IsLive)
-                    {
-                        <span class="auction-card__live-tag">
-                            <span class="hero__live-dot"></span> Live
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="auction-card__upcoming-tag">Upcoming</span>
-                    }
-                </div>
-
-                <div class="auction-card__body">
-                    <span class="auction-card__cat">@item.Category</span>
-                    <h4 class="auction-card__title">@item.Title</h4>
-                    <p class="auction-card__auctioneer">
-                        <i class="bi bi-person-badge"></i> @item.AuctioneerName
-                    </p>
-
-                    <div class="auction-card__footer">
-                        <div class="auction-card__bid">
-                            <span class="auction-card__bid-label">Current Bid</span>
-                            <span class="auction-card__bid-val">$@item.CurrentBid.ToString("N0")</span>
-                        </div>
-                        <div class="auction-card__time">
-                            <span class="auction-card__time-label">
-                                <i class="bi bi-clock"></i>
-                            </span>
-                            <span class="timer" data-ends="@item.EndsAt.ToString("o")">--:--:--</span>
+                <div class="col-12">
+                    <div class="card border-secondary featured-card">
+                        <div class="card-body text-center py-5">
+                            <h3 class="font-display h4 mb-2">No featured lots yet</h3>
+                            <p class="text-secondary mb-0">Featured listings will appear here as soon as auctioneers publish premium items.</p>
                         </div>
                     </div>
-
-                    <a class="ap-btn ap-btn--outline ap-btn--block ap-btn--sm"
-                           asp-page="/Account/Login" data-auction-id="@item.Id">
-                        <i class="bi bi-gavel"></i> Place Bid
-                    </a>
                 </div>
-            </article>
             }
-        }
-        else
-        {
-            <article class="auction-card auction-card--empty" data-status="all">
-                <div class="auction-card__body">
-                    <span class="auction-card__cat">Marketplace</span>
-                    <h4 class="auction-card__title">There are no auctions right now.</h4>
-                    <p class="auction-card__auctioneer">Please check back shortly for new listings.</p>
-                    <a class="ap-btn ap-btn--outline ap-btn--block ap-btn--sm" asp-page="/Account/Register">
-                        Notify Me When Auctions Open
-                    </a>
+        </div>
+    </div>
+</section>
+
+<!-- Browse grid -->
+<section class="py-5 bg-body-secondary border-top border-secondary">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="small text-uppercase text-warning fw-semibold mb-2">All Listings</div>
+            <h2 class="font-display display-5 fw-light mb-3">Browse Auctions</h2>
+            <p class="text-secondary mx-auto" style="max-width: 32rem;">Discover thousands of lots across every category</p>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4" id="filterTabs" role="group" aria-label="Filter auctions">
+            <button type="button" class="btn btn-outline-warning filter-tab active" data-filter="all">All</button>
+            <button type="button" class="btn btn-outline-warning filter-tab" data-filter="live">Live Now</button>
+            <button type="button" class="btn btn-outline-warning filter-tab" data-filter="upcoming">Upcoming</button>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="auctionGrid">
+            @if (Model.LiveAuctions.Any())
+            {
+                @foreach (var item in Model.LiveAuctions)
+                {
+                    <div class="col auction-grid-item" data-status="@(item.IsLive ? "live" : "upcoming")">
+                        <article class="card h-100 border-secondary auction-card @(item.IsLive ? "auction-card--live" : "")">
+                            <div class="position-relative">
+                                <img src="@item.ImageUrl" alt="@item.Title" class="card-img-top w-100 object-fit-cover" style="height: 180px;" loading="lazy" />
+                                @if (item.IsLive)
+                                {
+                                    <span class="position-absolute top-0 end-0 m-2 badge bg-danger">
+                                        <span class="rounded-circle bg-white d-inline-block me-1" style="width:6px;height:6px;"></span> Live
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="position-absolute top-0 end-0 m-2 badge text-bg-secondary border">Upcoming</span>
+                                }
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <span class="small text-uppercase text-warning fw-semibold">@item.Category</span>
+                                <h4 class="font-display h5 my-2">@item.Title</h4>
+                                <p class="small text-secondary mb-3"><i class="bi bi-person-badge"></i> @item.AuctioneerName</p>
+                                <div class="row g-2 small p-2 rounded bg-body-tertiary mb-3">
+                                    <div class="col-6">
+                                        <div class="text-secondary">Current Bid</div>
+                                        <div class="fs-5 font-display fw-bold text-warning">$@item.CurrentBid.ToString("N0")</div>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <div class="text-secondary"><i class="bi bi-clock"></i></div>
+                                        <div class="fw-semibold font-monospace timer" data-ends="@item.EndsAt.ToString("o")">--:--:--</div>
+                                    </div>
+                                </div>
+                                <a class="btn btn-outline-light btn-sm mt-auto" asp-page="/Account/Login" data-auction-id="@item.Id">
+                                    <i class="bi bi-gavel"></i> Place Bid
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 auction-grid-item" data-status="all">
+                    <article class="card border-secondary auction-card">
+                        <div class="card-body text-center py-5">
+                            <span class="small text-uppercase text-warning fw-semibold">Marketplace</span>
+                            <h4 class="font-display h5 mt-2">There are no auctions right now.</h4>
+                            <p class="text-secondary">Please check back shortly for new listings.</p>
+                            <a class="btn btn-outline-warning" asp-page="/Account/Register">Notify Me When Auctions Open</a>
+                        </div>
+                    </article>
                 </div>
-            </article>
-        }
-    </div>
-
-    <div class="section__more">
-        <a class="ap-btn ap-btn--ghost" asp-page="/Auctions/Index">
-            View All Auctions <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     HOW IT WORKS
-═══════════════════════════════════════════ -->
-<section class="section how-it-works" id="how-it-works">
-    <div class="section__header">
-        <div class="section__eyebrow">Simple Process</div>
-        <h2 class="section__title">How GavelPro Works</h2>
-        <p class="section__desc">Bidding made transparent, secure, and fair</p>
-    </div>
-
-    <div class="steps">
-        <div class="step">
-            <div class="step__num">01</div>
-            <div class="step__icon"><i class="bi bi-person-plus-fill"></i></div>
-            <h3 class="step__title">Create Your Account</h3>
-            <p class="step__desc">
-                Register for free in minutes. Browse all listings immediately —
-                no credit card required to get started.
-            </p>
+            }
         </div>
 
-        <div class="step__connector"><i class="bi bi-arrow-right"></i></div>
-
-        <div class="step">
-            <div class="step__num">02</div>
-            <div class="step__icon"><i class="bi bi-shield-check"></i></div>
-            <h3 class="step__title">Pay Bid Security</h3>
-            <p class="step__desc">
-                Before bidding, upload your bank-transfer slip as bid security.
-                The auctioneer reviews and approves it — usually within hours.
-            </p>
-        </div>
-
-        <div class="step__connector"><i class="bi bi-arrow-right"></i></div>
-
-        <div class="step">
-            <div class="step__num">03</div>
-            <div class="step__icon"><i class="bi bi-hammer"></i></div>
-            <h3 class="step__title">Bid & Win</h3>
-            <p class="step__desc">
-                Place real-time bids. Win the auction, receive payment instructions,
-                and complete the purchase securely.
-            </p>
-        </div>
-
-        <div class="step__connector"><i class="bi bi-arrow-right"></i></div>
-
-        <div class="step">
-            <div class="step__num">04</div>
-            <div class="step__icon"><i class="bi bi-trophy-fill"></i></div>
-            <h3 class="step__title">Receive Your Item</h3>
-            <p class="step__desc">
-                Upload your payment slip, get auctioneer approval,
-                and your item will be on its way to you.
-            </p>
+        <div class="text-center mt-5">
+            <a class="btn btn-link link-warning text-decoration-none" asp-page="/Auctions/Index">
+                View All Auctions <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     CATEGORIES STRIP
-═══════════════════════════════════════════ -->
-<section class="section categories-section">
-    <div class="section__header">
-        <div class="section__eyebrow">Browse By Type</div>
-        <h2 class="section__title">Popular Categories</h2>
-    </div>
+<!-- How it works -->
+<section class="py-5 border-top border-secondary" id="how-it-works">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="small text-uppercase text-warning fw-semibold mb-2">Simple Process</div>
+            <h2 class="font-display display-5 fw-light mb-3">How GavelPro Works</h2>
+            <p class="text-secondary mx-auto" style="max-width: 32rem;">Bidding made transparent, secure, and fair</p>
+        </div>
 
-    <div class="categories-grid">
-        <a class="cat-card" href="#">
-            <i class="bi bi-car-front-fill"></i>
-            <span>Classic Automobiles</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-palette-fill"></i>
-            <span>Fine Art</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-watch"></i>
-            <span>Luxury Watches</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-gem"></i>
-            <span>Jewellery</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-book-fill"></i>
-            <span>Rare Books</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-house-fill"></i>
-            <span>Real Estate</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-music-note-beamed"></i>
-            <span>Instruments</span>
-        </a>
-        <a class="cat-card" href="#">
-            <i class="bi bi-grid-fill"></i>
-            <span>All Categories</span>
-        </a>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-secondary step">
+                    <div class="card-body text-center">
+                        <div class="small text-warning fw-bold mb-2">01</div>
+                        <div class="rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25 d-inline-flex align-items-center justify-content-center mb-3" style="width:3.5rem;height:3.5rem;">
+                            <i class="bi bi-person-plus-fill fs-4 text-warning"></i>
+                        </div>
+                        <h3 class="font-display h5">Create Your Account</h3>
+                        <p class="small text-secondary mb-0">Register for free in minutes. Browse all listings immediately — no credit card required to get started.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-secondary step">
+                    <div class="card-body text-center">
+                        <div class="small text-warning fw-bold mb-2">02</div>
+                        <div class="rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25 d-inline-flex align-items-center justify-content-center mb-3" style="width:3.5rem;height:3.5rem;">
+                            <i class="bi bi-shield-check fs-4 text-warning"></i>
+                        </div>
+                        <h3 class="font-display h5">Pay Bid Security</h3>
+                        <p class="small text-secondary mb-0">Before bidding, upload your bank-transfer slip as bid security. The auctioneer reviews and approves it — usually within hours.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-secondary step">
+                    <div class="card-body text-center">
+                        <div class="small text-warning fw-bold mb-2">03</div>
+                        <div class="rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25 d-inline-flex align-items-center justify-content-center mb-3" style="width:3.5rem;height:3.5rem;">
+                            <i class="bi bi-hammer fs-4 text-warning"></i>
+                        </div>
+                        <h3 class="font-display h5">Bid &amp; Win</h3>
+                        <p class="small text-secondary mb-0">Place real-time bids. Win the auction, receive payment instructions, and complete the purchase securely.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-secondary step">
+                    <div class="card-body text-center">
+                        <div class="small text-warning fw-bold mb-2">04</div>
+                        <div class="rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25 d-inline-flex align-items-center justify-content-center mb-3" style="width:3.5rem;height:3.5rem;">
+                            <i class="bi bi-trophy-fill fs-4 text-warning"></i>
+                        </div>
+                        <h3 class="font-display h5">Receive Your Item</h3>
+                        <p class="small text-secondary mb-0">Upload your payment slip, get auctioneer approval, and your item will be on its way to you.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     CTA BANNER
-═══════════════════════════════════════════ -->
-<section class="cta-banner">
-    <div class="cta-banner__grain"></div>
-    <div class="cta-banner__inner">
-        <h2 class="cta-banner__title">
-            Ready to Bid on<br /><em>Extraordinary Things?</em>
+<!-- Categories -->
+<section class="py-5 bg-body-secondary border-top border-secondary">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="small text-uppercase text-warning fw-semibold mb-2">Browse By Type</div>
+            <h2 class="font-display display-5 fw-light">Popular Categories</h2>
+        </div>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-car-front-fill fs-3 text-warning d-block mb-2"></i><span class="small">Classic Automobiles</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-palette-fill fs-3 text-warning d-block mb-2"></i><span class="small">Fine Art</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-watch fs-3 text-warning d-block mb-2"></i><span class="small">Luxury Watches</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-gem fs-3 text-warning d-block mb-2"></i><span class="small">Jewellery</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-book-fill fs-3 text-warning d-block mb-2"></i><span class="small">Rare Books</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-house-fill fs-3 text-warning d-block mb-2"></i><span class="small">Real Estate</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-music-note-beamed fs-3 text-warning d-block mb-2"></i><span class="small">Instruments</span></a></div>
+            <div class="col"><a class="card card-body text-center text-decoration-none text-secondary border-secondary cat-card h-100" href="#"><i class="bi bi-grid-fill fs-3 text-warning d-block mb-2"></i><span class="small">All Categories</span></a></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 bg-warning bg-opacity-10 border-top border-warning border-opacity-25">
+    <div class="container py-lg-3 text-center">
+        <h2 class="font-display display-5 fw-light mb-3">
+            Ready to Bid on<br /><em class="text-warning">Extraordinary Things?</em>
         </h2>
-        <p class="cta-banner__sub">
+        <p class="text-secondary mx-auto mb-4" style="max-width: 36rem;">
             Join @Model.Stats.RegisteredBidders.ToString("N0") bidders already on the platform.
             Registration is free and takes under 2 minutes.
         </p>
-        <div class="cta-banner__actions">
-            <a class="ap-btn ap-btn--gold ap-btn--lg" asp-page="/Account/Register">
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            <a class="btn btn-warning btn-lg text-dark" asp-page="/Account/Register">
                 <i class="bi bi-person-plus"></i> Get Started Free
             </a>
-            <a class="ap-btn ap-btn--outline ap-btn--lg" href="#how-it-works">
-                Learn How It Works
-            </a>
+            <a class="btn btn-outline-light btn-lg" href="#how-it-works">Learn How It Works</a>
         </div>
     </div>
 </section>

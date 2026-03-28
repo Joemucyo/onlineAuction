@@ -1,0 +1,66 @@
+## Build outputs
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+publish/
+
+## Visual Studio / MSBuild
+.vs/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.rsuser
+*.userprefs
+
+## Publish profiles — *.pubxml.user holds credentials
+*.pubxml.user
+
+## NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+*.nuget.props
+*.nuget.targets
+
+## Test & coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+CoverageReport/
+coverage*.json
+coverage*.xml
+*.lcov
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## User secrets (local overrides — keep secrets out of the repo)
+**/appsettings.*.local.json
+**/secrets.json
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## VS Code (optional: remove these lines if your team commits shared launch/tasks)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+## OS junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+## Node (if you add npm tooling later)
+node_modules/

@@ -1,38 +1,14 @@
-﻿/* ═══════════════════════════════════════════
-   GAVELPRO AUCTIONS — MAIN JAVASCRIPT
-═══════════════════════════════════════════ */
+/* GavelPro — scripts used with Bootstrap */
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* ──────────────────────────────────────
-       1. STICKY NAV — add class on scroll
-    ────────────────────────────────────── */
     const nav = document.getElementById('mainNav');
     const onScroll = () => {
-        nav?.classList.toggle('scrolled', window.scrollY > 40);
+        nav?.classList.toggle('shadow', window.scrollY > 8);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 
-
-    /* ──────────────────────────────────────
-       2. MOBILE NAV TOGGLE
-    ────────────────────────────────────── */
-    const navToggle = document.getElementById('navToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    navToggle?.addEventListener('click', () => {
-        mobileMenu?.classList.toggle('open');
-    });
-    // Close on link click
-    mobileMenu?.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => mobileMenu.classList.remove('open'));
-    });
-
-
-    /* ──────────────────────────────────────
-       3. COUNTDOWN TIMERS
-       Data attribute: data-ends="ISO date"
-    ────────────────────────────────────── */
     function formatTime(ms) {
         if (ms <= 0) return 'Ended';
         const s = Math.floor(ms / 1000);
@@ -50,26 +26,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const ends = new Date(el.dataset.ends).getTime();
             const diff = ends - Date.now();
             el.textContent = formatTime(diff);
-            if (diff <= 0) el.style.color = 'var(--text-ghost)';
+            if (diff <= 0) {
+                el.classList.add('text-muted');
+                el.classList.remove('text-warning', 'text-danger');
+            } else {
+                el.classList.remove('text-muted');
+                if (el.classList.contains('timer')) {
+                    el.classList.add('text-warning');
+                }
+            }
         });
     }
     updateTimers();
     setInterval(updateTimers, 1000);
 
-
-    /* ──────────────────────────────────────
-       4. COUNTING STAT NUMBERS
-    ────────────────────────────────────── */
     function animateCount(el) {
         const target = parseInt(el.dataset.count, 10);
+        if (Number.isNaN(target)) return;
         const prefix = el.dataset.prefix || '';
         const suffix = el.dataset.suffix || '';
-        const dur = 1600;   // ms
+        const dur = 1600;
         const start = Date.now();
 
         (function tick() {
             const progress = Math.min((Date.now() - start) / dur, 1);
-            // Ease out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
             const val = Math.round(eased * target);
             el.textContent = prefix + val.toLocaleString() + suffix;
@@ -77,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })();
     }
 
-    const statNums = document.querySelectorAll('.stat-card__num[data-count]');
+    const statNums = document.querySelectorAll('.js-stat-num[data-count]');
     if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((entries, obs) => {
             entries.forEach(e => {
@@ -92,12 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         statNums.forEach(animateCount);
     }
 
-
-    /* ──────────────────────────────────────
-       5. FILTER TABS (All / Live / Upcoming)
-    ────────────────────────────────────── */
     const tabs = document.querySelectorAll('.filter-tab');
-    const cards = document.querySelectorAll('.auction-card');
+    const gridItems = document.querySelectorAll('#auctionGrid .auction-grid-item');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -105,17 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.classList.add('active');
 
             const filter = tab.dataset.filter;
-            cards.forEach(card => {
-                const show = filter === 'all' || card.dataset.status === filter;
-                card.style.display = show ? 'flex' : 'none';
+            gridItems.forEach(item => {
+                const status = item.dataset.status;
+                const show = filter === 'all' || status === filter || status === 'all';
+                item.classList.toggle('d-none', !show);
             });
         });
     });
 
-
-    /* ──────────────────────────────────────
-       6. SMOOTH SCROLL for anchor links
-    ────────────────────────────────────── */
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', e => {
             const id = a.getAttribute('href').slice(1);
@@ -127,12 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
-    /* ──────────────────────────────────────
-       7. FADE-IN ON SCROLL (auction cards)
-    ────────────────────────────────────── */
     const fadeEls = document.querySelectorAll(
-        '.auction-card, .featured-card, .step, .cat-card'
+        '.featured-card, .step, .cat-card, #auctionGrid .auction-grid-item'
     );
     if ('IntersectionObserver' in window) {
         const fadeOpts = { threshold: 0.1, rootMargin: '0px 0px -40px 0px' };
@@ -147,9 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fadeEls.forEach((el, i) => {
             el.style.opacity = '0';
-            // Stagger by column position
             setTimeout(() => fadeObs.observe(el), i * 40);
         });
     }
-
 });

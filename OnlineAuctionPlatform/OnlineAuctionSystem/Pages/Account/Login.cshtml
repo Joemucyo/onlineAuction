@@ -7,16 +7,47 @@
 
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6 text-center">
-            <p class="small text-uppercase text-warning fw-semibold mb-2">Account Access</p>
-            <h1 class="font-display display-5 fw-light mb-3">Sign in to place bids</h1>
-            <p class="text-secondary mb-4">
-                Authentication is being finalized. Use this placeholder screen while the full login flow is under development.
-            </p>
-            <div class="d-flex flex-wrap justify-content-center gap-2">
-                <a class="btn btn-outline-light" asp-page="/Index">Back to Home</a>
-                <a class="btn btn-warning text-dark" asp-page="/Account/Register">Create account</a>
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center mb-4">
+                <p class="small text-uppercase text-warning fw-semibold mb-2">Account Access</p>
+                <h1 class="font-display display-6 fw-light mb-2">Sign in</h1>
+                <p class="text-secondary mb-0">Buyers and Sellers will receive an OTP by email after login.</p>
+            </div>
+
+            <div class="card bg-body-tertiary border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" class="vstack gap-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+                        <div>
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <input asp-for="Input.Email" class="form-control form-control-lg" autocomplete="email" />
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <input asp-for="Input.Password" class="form-control form-control-lg" autocomplete="current-password" />
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-lg text-dark fw-semibold">
+                            Sign in
+                        </button>
+
+                        <div class="d-flex justify-content-between flex-wrap gap-2 pt-2">
+                            <a class="link-light text-decoration-none" asp-page="/Account/Register">
+                                Create account
+                            </a>
+                            <a class="link-secondary text-decoration-none" asp-page="/Index">Back to Home</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

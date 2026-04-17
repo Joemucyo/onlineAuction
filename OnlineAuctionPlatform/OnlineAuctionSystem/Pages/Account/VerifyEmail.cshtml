@@ -1,0 +1,60 @@
+@page
+@model OnlineAuctionSystem.Pages.Account.VerifyEmailModel
+@{
+    ViewData["Title"] = "Verify Email";
+    Layout = "_AuthLayout";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center mb-4">
+                <p class="small text-uppercase text-warning fw-semibold mb-2">Email Verification</p>
+                <h1 class="font-display display-6 fw-light mb-2">Enter your 6-digit code</h1>
+                <p class="text-secondary mb-0">
+                    We sent a verification code to <span class="text-light">@Model.Email</span>.
+                </p>
+            </div>
+
+            @if (TempData["StatusMessage"] is string msg && !string.IsNullOrWhiteSpace(msg))
+            {
+                <div class="alert alert-success border-0 shadow-sm">@msg</div>
+            }
+
+            <div class="card bg-body-tertiary border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" class="vstack gap-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+                        <input type="hidden" asp-for="Email" />
+
+                        <div>
+                            <label asp-for="Input.Code" class="form-label">Verification code</label>
+                            <input asp-for="Input.Code" class="form-control form-control-lg text-center" inputmode="numeric" autocomplete="one-time-code" />
+                            <span asp-validation-for="Input.Code" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-lg text-dark fw-semibold">
+                            Verify email
+                        </button>
+                    </form>
+
+                    <hr class="border-secondary opacity-25 my-4" />
+
+                    <form method="post" asp-page-handler="Resend" class="d-grid gap-2">
+                        <input type="hidden" asp-for="Email" />
+                        <button type="submit" class="btn btn-outline-warning btn-lg">
+                            Resend code
+                        </button>
+                        <a class="btn btn-outline-light btn-lg" asp-page="/Account/Login">Back to Sign in</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

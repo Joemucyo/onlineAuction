@@ -1,0 +1,82 @@
+@page
+@model OnlineAuctionSystem.Pages.Seller.MyAuctionsModel
+@{
+    ViewData["Title"] = "My Listings";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a asp-page="/Index" class="text-secondary text-decoration-none">Home</a></li>
+                    <li class="breadcrumb-item active text-warning" aria-current="page">My Listings</li>
+                </ol>
+            </nav>
+            <h1 class="display-5 fw-bold mb-0">My Listings</h1>
+        </div>
+        <a asp-page="/Seller/CreateAuction" class="btn btn-warning px-4 py-2 text-dark fw-semibold">
+            <i class="bi bi-plus-lg me-2"></i>Post New Item
+        </a>
+    </div>
+
+    <div class="card bg-dark border-secondary overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead class="text-secondary small text-uppercase">
+                    <tr>
+                        <th class="ps-4 py-3">Item</th>
+                        <th class="py-3">Current Bid</th>
+                        <th class="py-3">Status</th>
+                        <th class="py-3">Ends At</th>
+                        <th class="pe-4 text-end py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top border-secondary border-opacity-25">
+                    @if (!Model.Auctions.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="py-5 text-center text-secondary">
+                                <p class="mb-0">You have no listings yet.</p>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var auction in Model.Auctions)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="@auction.ImageUrl" alt="@auction.Title" class="rounded object-fit-cover" style="width: 40px; height: 40px;">
+                                        <span class="fw-semibold text-light">@auction.Title</span>
+                                    </div>
+                                </td>
+                                <td>$@auction.CurrentBid.ToString("N0")</td>
+                                <td>
+                                    @if (auction.IsLive && auction.EndsAt > DateTime.UtcNow)
+                                    {
+                                        <span class="badge bg-success-subtle text-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary">Ended</span>
+                                    }
+                                </td>
+                                <td>@auction.EndsAt.ToString("MMM dd, yyyy")</td>
+                                <td class="pe-4 text-end">
+                                    <div class="btn-group">
+                                        <a href="/Seller/AuctionDetails?id=@auction.Id" class="btn btn-outline-secondary btn-sm" title="Monitoring"><i class="bi bi-graph-up"></i></a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@auction.Id" onsubmit="return confirm('Are you sure you want to delete this listing?');" style="display:inline;">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

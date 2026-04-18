@@ -42,7 +42,7 @@ public class RegisterModel : PageModel
             Email = Input.Email,
             FullName = Input.FullName,
             Role = Input.Role,
-            IsEmailVerified = false
+            IsEmailVerified = true
         };
 
         var createResult = await _userManager.CreateAsync(user, Input.Password);
@@ -58,26 +58,7 @@ public class RegisterModel : PageModel
 
         await _userManager.AddToRoleAsync(user, Input.Role);
 
-        var verificationCode = GenerateSixDigitCode();
-        user.EmailVerificationCode = verificationCode;
-        user.EmailVerificationExpiry = DateTime.UtcNow.AddMinutes(15);
-        await _userManager.UpdateAsync(user);
-
-        try
-        {
-            await _emailService.SendEmailAsync(
-                user.Email!,
-                "GavelPro Email Verification Code",
-                $"Your GavelPro verification code is: {verificationCode}\n\nThis code expires in 15 minutes."
-            );
-        }
-        catch (InvalidOperationException ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            return Page();
-        }
-
-        return RedirectToPage("/Account/VerifyEmail", new { email = user.Email });
+        return RedirectToPage("/Account/Login");
     }
 
     public class InputModel

@@ -1,18 +1,281 @@
 @page
 @model OnlineAuctionSystem.Pages.Admin.ReportsModel
 @{
-    ViewData["Title"] = "Reports";
-    ViewData["AdminTitle"] = "Reports";
+    ViewData["Title"] = "Platform Reports";
+    ViewData["AdminTitle"] = "Platform Reports";
     Layout = "_AdminLayout";
 }
 
-<div class="text-center py-5">
-    <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-4" style="width:5rem;height:5rem;background:rgba(255,193,7,0.1)">
-        <i class="bi bi-bar-chart-line fs-1 text-warning"></i>
-    </div>
-    <h2 class="font-display h3 mb-2">Reports</h2>
-    <p class="text-secondary mx-auto mb-4" style="max-width:28rem">
-        This section is under development and will be available soon.
-    </p>
-    <a class="btn btn-outline-warning" asp-page="/Admin/Dashboard">Back to Dashboard</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 text-white font-display">System Analytics</h4>
+    <button onclick="downloadPdf()" class="btn btn-warning">
+        <i class="bi bi-file-earmark-pdf me-2"></i>Download Report as PDF
+    </button>
 </div>
+
+<div id="report-content" class="p-3 rounded">
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-people fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Total Users</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalUsers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-person fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Total Buyers</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalBuyers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-shop fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Total Sellers</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalSellers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-hammer fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Total Auctions</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalAuctions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(76,175,80,0.12)">
+                    <i class="bi bi-broadcast fs-5 text-success"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Live Now</div>
+                    <div class="fs-4 fw-bold font-display text-success">@Model.TotalLiveAuctions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(158,158,158,0.12)">
+                    <i class="bi bi-archive fs-5 text-secondary"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Ended</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalEndedAuctions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-arrow-up-circle fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Total Bids</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalBids</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-currency-dollar fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Total Bid Value</div>
+                    <div class="fs-4 fw-bold font-display text-warning">${@Model.TotalBidValue.ToString("N0")}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(255,193,7,0.12)">
+                    <i class="bi bi-calculator fs-5 text-warning"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Average Bid</div>
+                    <div class="fs-4 fw-bold font-display text-warning">${@Model.AverageBidAmount.ToString("N0")}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-secondary">
+    <div class="card-header border-secondary">
+        <h5 class="mb-0">Top 5 Categories by Auction Count</h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.TopCategories.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead>
+                        <tr class="border-bottom border-secondary">
+                            <th>Category</th>
+                            <th>Auctions</th>
+                            <th>Total Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.TopCategories)
+                        {
+                            <tr>
+                                <td>@category.CategoryName</td>
+                                <td>
+                                    <span class="badge text-bg-secondary">@category.AuctionCount</span>
+                                </td>
+                                <td>
+                                    <span class="text-warning">${@category.TotalValue.ToString("N0")}</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="mb-0 p-4 text-secondary">No auction data available yet.</p>
+        }
+    </div>
+</div>
+
+<div class="row g-3 mt-4">
+    <div class="col-md-6">
+        <div class="card border-secondary h-100 bg-dark text-white">
+            <div class="card-header border-secondary">
+                <h6 class="mb-0 font-display">User Demographics</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="userChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-secondary h-100 bg-dark text-white">
+            <div class="card-header border-secondary">
+                <h6 class="mb-0 font-display">Categories by Volume</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function downloadPdf() {
+            var element = document.getElementById('report-content');
+            var opt = {
+                margin:       0.5,
+                filename:     'Platform_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        const topCategoriesData = @Html.Raw(Model.TopCategoriesJson);
+        const labels = topCategoriesData.map(c => c.CategoryName);
+        const values = topCategoriesData.map(c => c.AuctionCount);
+
+        if(document.getElementById('categoryChart')) {
+            const ctxCat = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctxCat, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Auctions',
+                        data: values,
+                        backgroundColor: 'rgba(255, 193, 7, 0.7)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { labels: { color: '#ccc' } }
+                    },
+                    scales: {
+                        y: { ticks: { color: '#ccc', stepSize: 1 } },
+                        x: { ticks: { color: '#ccc' } }
+                    }
+                }
+            });
+        }
+
+        if (document.getElementById('userChart')) {
+            const ctxUser = document.getElementById('userChart').getContext('2d');
+            new Chart(ctxUser, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Buyers', 'Sellers', 'Admins'],
+                    datasets: [{
+                        data: [@Model.TotalBuyers, @Model.TotalSellers, @Model.TotalAdmins],
+                        backgroundColor: [
+                            'rgba(76, 175, 80, 0.7)',
+                            'rgba(255, 193, 7, 0.7)',
+                            'rgba(244, 67, 54, 0.7)'
+                        ],
+                        borderColor: '#212529',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#ccc' } }
+                    }
+                }
+            });
+        }
+    </script>
+}

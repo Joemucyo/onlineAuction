@@ -1,18 +1,163 @@
 @page
 @model OnlineAuctionSystem.Pages.Admin.AuctionsModel
 @{
-    ViewData["Title"] = "Auctions";
-    ViewData["AdminTitle"] = "Auctions";
+    ViewData["Title"] = "Auction Management";
+    ViewData["AdminTitle"] = "Auction Management";
     Layout = "_AdminLayout";
 }
 
-<div class="text-center py-5">
-    <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-4" style="width:5rem;height:5rem;background:rgba(255,193,7,0.1)">
-        <i class="bi bi-hammer fs-1 text-warning"></i>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(76,175,80,0.12)">
+                    <i class="bi bi-broadcast fs-5 text-success"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Live Now</div>
+                    <div class="fs-4 fw-bold font-display @(Model.TotalLive > 0 ? "text-success" : "text-body")">@Model.TotalLive</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <h2 class="font-display h3 mb-2">Auctions</h2>
-    <p class="text-secondary mx-auto mb-4" style="max-width:28rem">
-        This section is under development and will be available soon.
-    </p>
-    <a class="btn btn-outline-warning" asp-page="/Admin/Dashboard">Back to Dashboard</a>
+    <div class="col-md-3">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(33,150,243,0.12)">
+                    <i class="bi bi-clock fs-5 text-info"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Upcoming</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalUpcoming</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:3rem;height:3rem;background:rgba(158,158,158,0.12)">
+                    <i class="bi bi-archive fs-5 text-secondary"></i>
+                </div>
+                <div>
+                    <div class="small text-secondary">Ended</div>
+                    <div class="fs-4 fw-bold font-display">@Model.TotalEnded</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @Model.StatusMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.Auctions.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr class="border-bottom border-secondary">
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Seller</th>
+                    <th>Category</th>
+                    <th>Current Bid</th>
+                    <th>Status</th>
+                    <th>Ends At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var auction in Model.Auctions)
+                {
+                    var now = DateTime.UtcNow;
+                    var isLive = auction.IsLive && auction.EndsAt > now;
+                    var isUpcoming = auction.StartsAt > now;
+                    var isEnded = auction.EndsAt < now;
+
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(auction.ImageUrl))
+                            {
+                                <img src="@auction.ImageUrl" alt="@auction.Title" class="rounded" style="width:40px;height:40px;object-fit:cover;">
+                            }
+                            else
+                            {
+                                <div class="bg-secondary rounded" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
+                                    <i class="bi bi-image text-secondary"></i>
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            <strong>@auction.Title</strong>
+                            <br>
+                            <small class="text-secondary">@auction.AuctioneerName</small>
+                        </td>
+                        <td>
+                            @if (auction.Seller != null)
+                            {
+                                <span class="text-secondary small">@auction.Seller.FullName</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge text-bg-secondary">@auction.Category</span>
+                        </td>
+                        <td>
+                            <span class="text-warning">${@auction.CurrentBid.ToString("N0")}</span>
+                        </td>
+                        <td>
+                            @if (isLive)
+                            {
+                                <span class="badge bg-success">Live</span>
+                            }
+                            else if (isUpcoming)
+                            {
+                                <span class="badge bg-info text-dark">Upcoming</span>
+                            }
+                            else if (isEnded)
+                            {
+                                <span class="badge bg-secondary">Ended</span>
+                            }
+                        </td>
+                        <td>
+                            <small>@auction.EndsAt.ToString("MMM dd, yyyy HH:mm")</small>
+                        </td>
+                        <td>
+                            <form method="post" asp-page-handler="ToggleLive" class="d-inline">
+                                <input type="hidden" name="auctionId" value="@auction.Id">
+                                <button type="submit" class="btn btn-outline-warning btn-sm">
+                                    @(isLive ? "Pause" : "Go Live")
+                                </button>
+                            </form>
+                            |
+                            <form method="post" asp-page-handler="Delete" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this auction?');">
+                                <input type="hidden" name="auctionId" value="@auction.Id">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="bi bi-inbox fs-1 text-secondary mb-3" style="display:block;"></i>
+        <p class="text-secondary">No auctions found.</p>
+    </div>
+}

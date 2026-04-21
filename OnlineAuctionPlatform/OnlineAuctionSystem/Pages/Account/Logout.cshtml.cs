@@ -1,31 +1,24 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Identity;
 using OnlineAuctionSystem.Models;
 
-namespace OnlineAuctionSystem.Pages.Account
+namespace OnlineAuctionSystem.Pages.Account;
+
+public class LogoutModel : PageModel
 {
-    public class LogoutModel : PageModel
+    private readonly SignInManager<ApplicationUser> _signInManager;
+
+    // This constructor stores the sign-in manager used for logout.
+    public LogoutModel(SignInManager<ApplicationUser> signInManager)
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        _signInManager = signInManager;
+    }
 
-        public LogoutModel(SignInManager<ApplicationUser> signInManager)
-        {
-            _signInManager = signInManager;
-        }
-
-        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
-        {
-            await _signInManager.SignOutAsync();
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToPage("/Index");
-            }
-        }
+    // This method signs out the current user and sends them to login.
+    public async Task<IActionResult> OnPostAsync()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToPage("/Account/Login");
     }
 }

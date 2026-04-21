@@ -1,15 +1,44 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using OnlineAuctionSystem.Data;
+using OnlineAuctionSystem.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OnlineAuctionSystem.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ApplicationDbContext _context;
+
+        public IndexModel(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public List<AuctionItem> FeaturedAuctions { get; set; } = new();
         public List<AuctionItem> LiveAuctions { get; set; } = new();
+        public List<AuctionItem> LiveUserAuctions { get; set; } = new();
+        public List<AuctionItem> UpcomingUserAuctions { get; set; } = new();
         public PlatformStats Stats { get; set; } = new();
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
+            var now = DateTime.UtcNow;
+
+            // Fetch Live dynamic auctions
+            LiveUserAuctions = await _context.Auctions
+                .Where(a => a.IsLive && a.StartsAt <= now && a.EndsAt > now)
+                .OrderBy(a => a.EndsAt)
+                .Take(6)
+                .ToListAsync();
+
+            // Fetch Upcoming dynamic auctions
+            UpcomingUserAuctions = await _context.Auctions
+                .Where(a => a.StartsAt > now)
+                .OrderBy(a => a.StartsAt)
+                .Take(6)
+                .ToListAsync();
             // Seed featured/hero auctions
             FeaturedAuctions = new List<AuctionItem>
             {
@@ -21,7 +50,8 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 285000,
                     StartingBid = 200000,
                     BidCount = 34,
-                    EndsAt = DateTime.Now.AddHours(3).AddMinutes(22),
+                    StartsAt = DateTime.UtcNow.AddDays(-7),
+                    EndsAt = DateTime.UtcNow.AddHours(3).AddMinutes(22),
                     ImageUrl = "https://images.unsplash.com/photo-1594502184342-2e12f877aa73?w=800&q=80",
                     AuctioneerName = "Premier Motors Auction House",
                     IsFeatured = true,
@@ -35,7 +65,8 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 47500,
                     StartingBid = 30000,
                     BidCount = 18,
-                    EndsAt = DateTime.Now.AddHours(1).AddMinutes(45),
+                    StartsAt = DateTime.UtcNow.AddDays(-3),
+                    EndsAt = DateTime.UtcNow.AddHours(1).AddMinutes(45),
                     ImageUrl = "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&q=80",
                     AuctioneerName = "Galerie Moderne",
                     IsFeatured = true,
@@ -49,7 +80,8 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 132000,
                     StartingBid = 100000,
                     BidCount = 51,
-                    EndsAt = DateTime.Now.AddMinutes(55),
+                    StartsAt = DateTime.UtcNow.AddDays(-1),
+                    EndsAt = DateTime.UtcNow.AddMinutes(55),
                     ImageUrl = "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80",
                     AuctioneerName = "Horological Estates",
                     IsFeatured = true,
@@ -68,7 +100,8 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 8400,
                     StartingBid = 5000,
                     BidCount = 9,
-                    EndsAt = DateTime.Now.AddHours(6),
+                    StartsAt = DateTime.UtcNow.AddDays(-5),
+                    EndsAt = DateTime.UtcNow.AddHours(6),
                     ImageUrl = "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
                     AuctioneerName = "Heritage Estates",
                     IsLive = true
@@ -81,7 +114,8 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 22000,
                     StartingBid = 18000,
                     BidCount = 14,
-                    EndsAt = DateTime.Now.AddHours(9).AddMinutes(15),
+                    StartsAt = DateTime.UtcNow.AddDays(-2),
+                    EndsAt = DateTime.UtcNow.AddHours(9).AddMinutes(15),
                     ImageUrl = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80",
                     AuctioneerName = "Lumière Jewels",
                     IsLive = true
@@ -94,7 +128,8 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 3750,
                     StartingBid = 2500,
                     BidCount = 22,
-                    EndsAt = DateTime.Now.AddHours(2).AddMinutes(30),
+                    StartsAt = DateTime.UtcNow.AddDays(-1),
+                    EndsAt = DateTime.UtcNow.AddHours(2).AddMinutes(30),
                     ImageUrl = "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80",
                     AuctioneerName = "Cosmos Collectibles",
                     IsLive = true
@@ -107,7 +142,7 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 14200,
                     StartingBid = 10000,
                     BidCount = 7,
-                    EndsAt = DateTime.Now.AddHours(12),
+                    EndsAt = DateTime.UtcNow.AddHours(12),
                     ImageUrl = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
                     AuctioneerName = "Maison de Mode",
                     IsLive = false
@@ -120,7 +155,7 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 61000,
                     StartingBid = 50000,
                     BidCount = 11,
-                    EndsAt = DateTime.Now.AddDays(1).AddHours(4),
+                    EndsAt = DateTime.UtcNow.AddDays(1).AddHours(4),
                     ImageUrl = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
                     AuctioneerName = "Folio Fine Books",
                     IsLive = false
@@ -133,7 +168,7 @@ namespace OnlineAuctionSystem.Pages
                     CurrentBid = 98000,
                     StartingBid = 75000,
                     BidCount = 6,
-                    EndsAt = DateTime.Now.AddDays(2),
+                    EndsAt = DateTime.UtcNow.AddDays(2),
                     ImageUrl = "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80",
                     AuctioneerName = "Concert Estate Auctions",
                     IsLive = false

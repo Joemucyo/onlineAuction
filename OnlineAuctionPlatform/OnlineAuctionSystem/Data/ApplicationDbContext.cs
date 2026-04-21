@@ -12,6 +12,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<AuctionItem> Auctions { get; set; } = null!;
     public DbSet<Bid> Bids { get; set; } = null!;
+<<<<<<< HEAD
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Dispute> Disputes { get; set; } = null!;
     public DbSet<PlatformSetting> Settings { get; set; } = null!;
@@ -45,5 +46,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         );
     }
 
+=======
+>>>>>>> 2e32ebc875ce4e9a5a1f916c7e779d437cede61c
 }
 

@@ -1,0 +1,107 @@
+@page
+@model OnlineAuctionSystem.Pages.Seller.AuctionDetailsModel
+@{
+    ViewData["Title"] = "Monitor Bids - " + Model.Auction.Title;
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a asp-page="/Index" class="text-secondary text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a asp-page="/Seller/Dashboard" class="text-secondary text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item active text-warning" aria-current="page">Monitor Bids</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-lg-4">
+            <div class="card bg-dark border-secondary overflow-hidden mb-4">
+                <img src="@Model.Auction.ImageUrl" alt="@Model.Auction.Title" class="card-img-top object-fit-cover" style="height: 240px;">
+                <div class="card-body p-4">
+                    <span class="badge bg-warning text-dark mb-2">@Model.Auction.Category</span>
+                    <h1 class="h3 fw-bold mb-3 font-display">@Model.Auction.Title</h1>
+                    <p class="text-secondary small">@Model.Auction.Description</p>
+                    <hr class="border-secondary border-opacity-50">
+                    
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-secondary small text-uppercase tracking-wider fw-semibold mb-1">Starting Price</div>
+                            <div class="h5 mb-0">$@Model.Auction.StartingBid.ToString("N0")</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-secondary small text-uppercase tracking-wider fw-semibold mb-1">Min Increment</div>
+                            <div class="h5 mb-0">$@Model.Auction.MinimumIncrement.ToString("N0")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-dark border-secondary p-4">
+                <h2 class="h5 mb-4 font-display">Auction Status</h2>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary">Status:</span>
+                    @if (Model.Auction.IsLive && Model.Auction.EndsAt > DateTime.UtcNow)
+                    {
+                        <span class="text-success fw-bold">Live</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">Ended</span>
+                    }
+                </div>
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="text-secondary">Ends At:</span>
+                    <span>@Model.Auction.EndsAt.ToString("MMM dd, yyyy HH:mm")</span>
+                </div>
+                <a href="/Seller/EditAuction?id=@Model.Auction.Id" class="btn btn-outline-warning w-100">Edit Listing</a>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card bg-dark border-secondary overflow-hidden">
+                <div class="card-header bg-dark border-secondary py-3 d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0 font-display">Bid History</h2>
+                    <span class="badge bg-secondary">@Model.Bids.Count Bids Total</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark align-middle mb-0">
+                        <thead class="text-secondary small text-uppercase">
+                            <tr>
+                                <th class="ps-4 py-3">Bidder</th>
+                                <th class="py-3">Amount</th>
+                                <th class="pe-4 text-end py-3">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top border-secondary border-opacity-25">
+                            @if (!Model.Bids.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="py-5 text-center text-secondary">
+                                        <i class="bi bi-graph-up fs-1 d-block mb-3 opacity-25"></i>
+                                        <p class="mb-0">No bids have been placed yet.</p>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var bid in Model.Bids)
+                                {
+                                    <tr>
+                                        <td class="ps-4 py-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-person-circle text-secondary"></i>
+                                                <span>@bid.User.FullName</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 fw-bold text-warning">$@bid.Amount.ToString("N0")</td>
+                                        <td class="pe-4 text-end py-3 text-secondary small">@bid.Timestamp.ToString("MMM dd, HH:mm:ss")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

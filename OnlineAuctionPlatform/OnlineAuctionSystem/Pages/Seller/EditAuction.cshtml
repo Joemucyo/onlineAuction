@@ -1,0 +1,92 @@
+@page
+@model OnlineAuctionSystem.Pages.Seller.EditAuctionModel
+@{
+    ViewData["Title"] = "Edit Listing";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a asp-page="/Index" class="text-secondary text-decoration-none">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-page="/Seller/Dashboard" class="text-secondary text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item active text-warning" aria-current="page">Edit Listing</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold mb-4">Edit Listing</h1>
+
+            <div class="card bg-dark border-secondary p-4 p-md-5">
+                <form method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label asp-for="Input.Title" class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Title</label>
+                            <input asp-for="Input.Title" class="form-control bg-black border-secondary text-white py-3 px-4" />
+                            <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.Category" class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Category</label>
+                            <select asp-for="Input.Category" class="form-select bg-black border-secondary text-white py-3 px-4">
+                                <option value="Classic Automobiles">Classic Automobiles</option>
+                                <option value="Fine Art & Collectibles">Fine Art & Collectibles</option>
+                                <option value="Luxury Timepieces">Luxury Timepieces</option>
+                                <option value="Antique Furniture">Antique Furniture</option>
+                                <option value="Fine Jewellery">Fine Jewellery</option>
+                                <option value="Space & Aviation">Space & Aviation</option>
+                                <option value="Vintage Fashion">Vintage Fashion</option>
+                                <option value="Rare Books & Manuscripts">Rare Books & Manuscripts</option>
+                                <option value="Musical Instruments">Musical Instruments</option>
+                            </select>
+                            <span asp-validation-for="Input.Category" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.ImageUrl" class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Image URL</label>
+                            <input asp-for="Input.ImageUrl" class="form-control bg-black border-secondary text-white py-3 px-4" />
+                            <span asp-validation-for="Input.ImageUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Input.Description" class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Description</label>
+                            <textarea asp-for="Input.Description" class="form-control bg-black border-secondary text-white py-3 px-4" rows="4"></textarea>
+                            <span asp-validation-for="Input.Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.StartingBid" class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Starting Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-black border-secondary text-secondary">$</span>
+                                <input asp-for="Input.StartingBid" class="form-control bg-black border-secondary text-white py-3" />
+                            </div>
+                            <span asp-validation-for="Input.StartingBid" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.MinimumIncrement" class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Min Increment</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-black border-secondary text-secondary">$</span>
+                                <input asp-for="Input.MinimumIncrement" class="form-control bg-black border-secondary text-white py-3" />
+                            </div>
+                            <span asp-validation-for="Input.MinimumIncrement" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn btn-warning px-5 py-3 text-dark fw-bold flex-grow-1">Save Changes</button>
+                                <a asp-page="/Seller/Dashboard" class="btn btn-outline-secondary px-5 py-3">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

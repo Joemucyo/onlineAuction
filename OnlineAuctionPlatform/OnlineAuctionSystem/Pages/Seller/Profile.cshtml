@@ -1,0 +1,103 @@
+@page
+@model OnlineAuctionSystem.Pages.Seller.ProfileModel
+@{
+    ViewData["Title"] = "Seller Profile";
+}
+
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4 border-0 shadow-sm" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @Model.StatusMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card bg-dark border-secondary shadow-lg overflow-hidden">
+                <div class="card-header bg-gradient-warning border-0 p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4 position-relative">
+                            @if (!string.IsNullOrEmpty(Model.Input.ProfilePictureUrl))
+                            {
+                                <img src="@Model.Input.ProfilePictureUrl" alt="Profile" class="rounded-circle border border-4 border-white shadow" style="width: 100px; height: 100px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-white text-warning d-flex align-items-center justify-content-center shadow border border-4 border-white" style="width: 100px; height: 100px;">
+                                    <i class="bi bi-person-fill display-4"></i>
+                                </div>
+                            }
+                        </div>
+                        <div>
+                            <h1 class="display-6 fw-bold text-white mb-0">@Model.Input.FullName</h1>
+                            <p class="text-white opacity-75 mb-0">Seller Account Management</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-lg-5">
+                    <form method="post" enctype="multipart/form-data" class="row g-4">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+                        <div class="col-12">
+                            <h5 class="text-warning mb-4 pb-2 border-bottom border-secondary">Personal Information</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.FullName" class="form-label text-secondary small text-uppercase fw-bold"></label>
+                            <input asp-for="Input.FullName" class="form-control bg-black border-secondary text-white py-3" />
+                            <span asp-validation-for="Input.FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.PhoneNumber" class="form-label text-secondary small text-uppercase fw-bold"></label>
+                            <input asp-for="Input.PhoneNumber" class="form-control bg-black border-secondary text-white py-3" />
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <h5 class="text-warning mb-4 mt-4 pb-2 border-bottom border-secondary">Business Details</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.CompanyName" class="form-label text-secondary small text-uppercase fw-bold"></label>
+                            <input asp-for="Input.CompanyName" class="form-control bg-black border-secondary text-white py-3" placeholder="e.g. Acme Antiques" />
+                            <span asp-validation-for="Input.CompanyName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.ProfilePicture" class="form-label text-secondary small text-uppercase fw-bold"></label>
+                            <input asp-for="Input.ProfilePicture" type="file" class="form-control bg-black border-secondary text-white py-3" accept="image/*" />
+                            <span asp-validation-for="Input.ProfilePicture" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Input.Address" class="form-label text-secondary small text-uppercase fw-bold"></label>
+                            <input asp-for="Input.Address" class="form-control bg-black border-secondary text-white py-3" placeholder="Street, City, Zip Code" />
+                            <span asp-validation-for="Input.Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Input.Bio" class="form-label text-secondary small text-uppercase fw-bold"></label>
+                            <textarea asp-for="Input.Bio" class="form-control bg-black border-secondary text-white py-3" rows="4" placeholder="Tell buyers about yourself or your business..."></textarea>
+                            <span asp-validation-for="Input.Bio" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-warning btn-lg text-dark px-5 py-3 fw-bold">
+                                <i class="bi bi-save2 me-2"></i> Save Profile Changes
+                            </button>
+                            <a asp-page="/Seller/Dashboard" class="btn btn-outline-secondary btn-lg px-4 py-3 ms-2">Back to Dashboard</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

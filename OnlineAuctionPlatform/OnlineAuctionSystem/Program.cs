@@ -19,6 +19,15 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Account/VerifyEmail");
     options.Conventions.AllowAnonymousToPage("/Account/VerifyOtp");
     options.Conventions.AllowAnonymousToPage("/Account/AccessDenied");
+
+    options.Conventions.AuthorizePage("/Admin/Dashboard", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Users", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Auctions", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Listings", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Disputes", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Categories", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Reports", "AdminOnly");
+    options.Conventions.AuthorizePage("/Admin/Settings", "AdminOnly");
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

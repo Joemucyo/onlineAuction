@@ -63,10 +63,10 @@ public class VerifyOtpModel : PageModel
 
         if (await _userManager.IsInRoleAsync(user, "Seller") || string.Equals(user.Role, "Seller", StringComparison.OrdinalIgnoreCase))
         {
-            return LocalRedirect("/Seller/Dashboard");
+            return LocalRedirect("/Index");
         }
 
-        return LocalRedirect("/Buyer/Dashboard");
+        return LocalRedirect("/Index");
     }
 
     public async Task<IActionResult> OnPostResendAsync()

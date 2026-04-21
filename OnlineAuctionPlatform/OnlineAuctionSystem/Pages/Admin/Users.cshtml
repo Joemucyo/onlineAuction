@@ -1,0 +1,137 @@
+@page
+@model OnlineAuctionSystem.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "Users";
+    ViewData["AdminTitle"] = "User Management";
+    Layout = "_AdminLayout";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="alert alert-success">@Model.StatusMessage</div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div class="card border-secondary mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-8">
+                <input type="text" id="userSearch" class="form-control bg-dark border-secondary text-light" placeholder="Search by name or email..." />
+            </div>
+            <div class="col-md-4">
+                <div class="small text-secondary">Filtering happens in the browser</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Users.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Verified</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                @foreach (var user in Model.Users)
+                {
+                    var isSuspended = user.LockoutEnabled && user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.UtcNow;
+
+                    <tr>
+                        <td class="fw-bold">@user.FullName</td>
+                        <td class="text-secondary small">@user.Email</td>
+                        <td>
+                            @if (user.Role == "Seller")
+                            {
+                                <span class="badge text-bg-warning text-dark">Seller</span>
+                            }
+                            else if (user.Role == "Admin")
+                            {
+                                <span class="badge text-bg-danger">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">Buyer</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.IsEmailVerified)
+                            {
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                            }
+                        </td>
+                        <td>
+                            @if (isSuspended)
+                            {
+                                <span class="badge bg-danger">Suspended</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </td>
+                        <td class="text-secondary small">Not available</td>
+                        <td>
+                            @if (!isSuspended)
+                            {
+                                <form method="post" asp-page-handler="Suspend" class="d-inline">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-warning btn-sm text-dark">Suspend</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Unsuspend" class="d-inline">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-outline-success btn-sm">Unsuspend</button>
+                                </form>
+                            }
+                            <span class="small mx-1 text-secondary">|</span>
+                            <form method="post" asp-page-handler="Delete" class="d-inline">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to permanently delete this account?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="text-center text-secondary py-5">No users found.</div>
+}
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById("userSearch");
+        const rows = document.querySelectorAll("#usersTableBody tr");
+
+        if (searchInput) {
+            searchInput.addEventListener("input", function () {
+                const query = this.value.toLowerCase();
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(query) ? "" : "none";
+                });
+            });
+        }
+    </script>
+}
